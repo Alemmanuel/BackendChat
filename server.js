@@ -1,43 +1,20 @@
+// server.js
 const express = require('express');
-const http = require('http');
-const socketIo = require('socket.io');
-const cors = require('cors');
-require('dotenv').config();
-
-const db = require('./db');
-const messageRoutes = require('./routes');
-const Message = require('./messageModel');
-
 const app = express();
-const server = http.createServer(app);
-const io = socketIo(server, { cors: { origin: "*" } });
+const routes = require('./routes');
+require('dotenv').config();
+const cors = require('cors');
 
-app.use(cors());
+// Middleware para parsear JSON
 app.use(express.json());
-app.use('/api', messageRoutes);
 
-// WebSockets para recibir mensajes en tiempo real
-io.on('connection', (socket) => {
-    console.log("🔵 Usuario conectado");
+// Middleware CORS para permitir acceso desde cualquier frontend
+app.use(cors());
 
-    socket.on('sendMessage', (data) => {
-        const { sender, message } = data;
+// Exponemos los endpoints bajo /api
+app.use('/api', routes);
 
-        // Guardar mensaje en MySQL
-        Message.create(sender, message, (err) => {
-            if (err) return console.error(err);
-            
-            // Emitir mensaje a todos los clientes
-            io.emit('receiveMessage', { sender, message });
-        });
-    });
-
-    socket.on('disconnect', () => {
-        console.log("🔴 Usuario desconectado");
-    });
-});
-
-// Iniciar servidor
-server.listen(process.env.PORT, () => {
-    console.log(`🚀 Servidor corriendo en http://localhost:${process.env.PORT}`);
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Servidor corriendo en http://0.0.0.0:${PORT}`);
 });

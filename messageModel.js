@@ -1,15 +1,17 @@
+// messageModel.js
 const db = require('./db');
 
 const Message = {
-    create: (sender, message, callback) => {
-        const sql = "INSERT INTO messages (sender, message) VALUES (?, ?)";
-        db.query(sql, [sender, message], callback);
-    },
-
-    getAll: (callback) => {
-        const sql = "SELECT sender, message, timestamp FROM messages ORDER BY timestamp ASC";
-        db.query(sql, callback);
-    }
+  // Inserta un mensaje en la tabla "mensajes"
+  create: (usuario, mensaje, callback) => {
+    const sql = "INSERT INTO mensajes (usuario, mensaje) VALUES (?, ?)";
+    db.query(sql, [usuario, mensaje], callback);
+  },
+  // Obtiene todos los mensajes ordenados por id ascendente
+  getAll: (callback) => {
+    const sql = "SELECT * FROM mensajes ORDER BY id ASC";
+    db.query(sql, callback);
+  }
 };
 
 module.exports = Message;

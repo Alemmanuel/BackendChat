@@ -1,7 +1,12 @@
+// routes.js
 const express = require('express');
 const router = express.Router();
-const messageController = require('./controllers');
+const controllers = require('./controllers');
 
-router.get('/messages', messageController.getMessages);
+// Ruta GET para obtener todos los mensajes
+router.get('/mensajes', controllers.obtenerMensajes);
+
+// Ruta POST para enviar un mensaje y traducirlo
+router.post('/mensajes', controllers.enviarMensaje);
 
 module.exports = router;
